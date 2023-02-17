@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Discord Timestamp Generator</title>
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            .center-screen {
+                position: absolute;
+                top:0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+                width: 20%;
+                min-width: 400px;
+                height: min-content;
+                background: #36393f;
+                border-radius: 1em;
+                border-style: solid;
+                border-width: 0.15em;
+                border-color:#1e1f22;
+            }
+            body {
+                height: 100%;
+                margin: 0;
+                background: linear-gradient(69.9deg, #63666d 3.2%, #4d4f55 97.6%);
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="w3-main center-screen">
+            <div class="w3-panel">
+                <h2 style="color:whitesmoke;text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"><b>Discord Timestamp Generator</b></h2>
+            </div>
+            <div class="w3-panel" style="background: #2f3136;">
+                <h5 style="color:whitesmoke;">Select local time</h5>
+                <input type="date" id="date" style="border-radius: 0.5em;background: whitesmoke" />
+                <input type="number" id="hour" min="0" max="23" style="width: 4em;">
+                <input type="number" id="minute" min="0" max="59" style="width: 4em;">
+                <p class="fa" style="display:block;color:whitesmoke;">Timestamp: <span id="unix"></span></p>
+            </div>
+            <div class="w3-panel">
+                <h5 style="color:whitesmoke;">Discord Format</h5>
+                <table class="w3-table w3-striped w3-hoverable w3-white" style="border-radius:1em;overflow:hidden">
+                    <tr>
+                        <th>Style</th>
+                        <th>Code</th>
+                    </tr>
+                    <tr>
+                        <td>Short Time</td>
+                        <td id="shortTime"></td>
+                    </tr>
+                    <tr>
+                        <td>Long Time</td>
+                        <td id="longTime"></td>
+                    </tr>
+                    <tr>
+                        <td>Short Date</td>
+                        <td id="shortDate"></td>
+                    </tr>
+                    <tr>
+                        <td>Long Date</td>
+                        <td id="longDate"></td>
+                    </tr>
+                    <tr>
+                        <td>Short Date/Time</td>
+                        <td id="shortDateTime"></td>
+                    </tr>
+                    <tr>
+                        <td>Long Date/Time</td>
+                        <td id="longDateTime"></td>
+                    </tr>
+                    <tr>
+                        <td>Relative Time</td>
+                        <td id="relativeTime"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+    <script>
+        var dateTime = new Date();
+        var unixTimestamp = Math.floor(dateTime.getTime()/1000);
+        $('#date').val(dateTime.toLocaleDateString());
+        $('#hour').val(parseInt(dateTime.toTimeString().substr(0, 2)));
+        $('#minute').val(parseInt(dateTime.toTimeString().substr(3, 2)));
+        updateChart();
+        updateDate();
+        
+
+
+        function updateChart() {
+            var baseString = `&ltt:${unixTimestamp}:`;
+            $("#shortTime").html(`${baseString}t&gt`);
+            $("#longTime").html(`${baseString}T&gt`);
+            $("#shortDate").html(`${baseString}d&gt`);
+            $("#longDate").html(`${baseString}D&gt`);
+            $("#shortDateTime").html(`${baseString}f&gt`);
+            $("#longDateTime").html(`${baseString}F&gt`);
+            $("#relativeTime").html(`${baseString}R&gt`);
+
+        }
+
+        function updateDate() {
+            var date = new Date($('#date').val());
+            var dateOnly = Math.floor(date.getTime() / 86400000) * 86400000;
+            var hour = parseInt($('#hour').val()) * 3600000;
+            var minutes = parseInt($('#minute').val()) * 60000;
+            var offset = date.getTimezoneOffset() * 60000;
+            var timestamp = new Date(dateOnly+hour+minutes+offset);
+            dateTime = timestamp;
+            unixTimestamp = Math.floor(dateTime.getTime()/1000);
+            $("#unix").html(unixTimestamp);
+            updateChart();
+        }
+
+        $('#date').on('change', updateDate);
+        $('#hour').on('change', updateDate);
+        $('#minute').on('change', updateDate);
+    </script>
+</html>
